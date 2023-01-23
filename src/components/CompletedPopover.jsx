@@ -21,6 +21,7 @@ function CompletedPopover(props) {
 
   const clearCompletedList = () => {
     setCompletedTask("");
+    setAnchorEl(null);
   };
 
   return (

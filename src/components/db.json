@@ -1,0 +1,18 @@
+{
+    "data":{
+        "user":{
+            "userName":"",
+            "userId":"",
+            "data":[
+                {
+                    "_id":"",
+                    "task":"",
+                    "deadline":"",
+                    "status":"",
+                    "timestamp":""
+                }              
+            ]
+
+        }
+    }
+}

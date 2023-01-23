@@ -38,10 +38,10 @@ body{
 
 
 .area{
-    background: #4e54c8;  
-    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
+    background: #8286e3;  
+    background: -webkit-linear-gradient(to left, #767bd2, #4e54c8);  
     width: 100%;
-    height:100vh;
+    max-height: max-content ;
     
    
 }
@@ -160,35 +160,65 @@ body{
     }
 
 }
-
+.header-bg{
+    background-color: #02133d;
+    width: 100%;
+    padding: 1rem;
+    color: #ffff;
+}
 .app-container{
     width: 100vw;
-    height: 100vh;
-    background-color: #dbffc8;
+    height:auto;
+    background-color: #ebf1eb;
+    /* box-shadow: 12px 2px 15px 11px rgb(154, 154, 157); */
     /* border-radius: 22px; */
 }
 .htm-element{
     height: 50px;
 }
 .left-right-panel{
-    background-color: #4a4a4c;
+    height: 100vh;
+    background-color: #9c9b9b;
 }
+
 .empty-list-text-container{
     padding: 8rem;
-    border: 1px solid rgb(129, 218, 99);
+    border: 1px solid rgb(54, 86, 243);
+    opacity: 0.5;
     border-radius: 18px;
+    font-weight: 900;
+    
+}
+.task-container{
+    height: 40vh;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    overflow-y: scroll;
+    border: 1px solid rgb(0, 42, 252);
+    border-radius: 18px;
+    padding: 1em;
     /* margin-top: 10em; */
     font-weight: 900;
 }
-.task-container{
-    height: 60%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    overflow-x: scroll;
-    overflow-y: none;
-    border: 1px solid rgb(129, 218, 99);
-    border-radius: 18px;
-    /* margin-top: 10em; */
-    font-weight: 900;
+.timestamp-container{
+    font-size: 8px;
+    padding:10px ;
+    border-radius: 10px;
+    color: #09090b;
+    margin-top: 0.4rem;
+    border: 1px solid #0d3087;
+}
+.profile-container{
+    background-image: url('../public/images/user-image.png');
+    background-color:rgba(73, 69, 69, 0.2);
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    
+  
 }

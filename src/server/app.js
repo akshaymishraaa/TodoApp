@@ -2,6 +2,7 @@ const express = require("express");
 const mongoClient = require("mongodb").MongoClient;
 const cors = require("cors");
 const mongodb = require("mongodb");
+const { mongo } = require("mongoclient/config");
 
 const connectionString = "mongodb://127.0.0.1:27017";
 
@@ -17,15 +18,18 @@ app.use(cors());
 
 // Get API
 
-app.get("/", async (req, res) => {
+app.get("/:id", async (req, res) => {
   mongoClient.connect(connectionString, (err, db) => {
     if (!err) {
       const dbo = db.db("TodoDb");
+      const query = { userId: req.params.id.slice(1) };
+      console.log(query)
       dbo
         .collection("TodoList")
-        .find({})
+        .find(query)
         .toArray((err, document) => {
           if (!err) {
+            console.log(document)
             res.send(document);
           } else {
             throw err;
@@ -42,11 +46,21 @@ app.post("/addTask", (req, res) => {
   mongoClient.connect(connectionString, (err, db) => {
     if (!err) {
       const dbo = db.db("TodoDb");
+      console.log(req.body.userId);
       var data = {
-        task: req.body.task,
-        deadline: req.body.deadline,
-        status: req.body.status,
+        userId: req.body.userId.slice(1),
+        data: {
+          task: req.body.task,
+          deadline: req.body.deadline,
+          status: req.body.status,
+          timestamp: req.body.timestamp,
+        },
       };
+      // task: req.body.task,
+      // deadline: req.body.deadline,
+      // status: req.body.status,
+      // timestamp: req.body.timestamp,
+      // };
       dbo.collection("TodoList").insertOne(data, (err, result) => {
         if (!err) {
           console.log("record inserted", req.body);
@@ -78,48 +92,42 @@ app.delete("/deleteTask/:id", async (req, res) => {
   });
 });
 
-// Complete API
 
-app.delete("/completeTask/:id", async (req, res) => {
+// Add completed data in table
+
+app.post("/postCompletedData", (req, res) => {
   mongoClient.connect(connectionString, (err, db) => {
     if (!err) {
       const dbo = db.db("TodoDb");
-      const completedTask = req.body;
-      console.log("success", req.body);
-      dbo
-        .collection("TodoList")
-        .deleteOne({ _id: new mongodb.ObjectId(req.params.id) }, (err, obj) => {
-          if (!err) {
-            // res.send(obj);
-            console.log('completed')
-          } else {
-            throw err.message;
-          }
-        });
-      dbo
-        .collection("Completed_data")
-        .insertOne(completedTask, (err, result) => {
-          if (!err) {
-            console.log("record inserted", req.body);
-            // const resp = req.body.task
-            res.send(`record inserted successfully ${req.body.task}`);
-          }
-        });
+      const data = {
+        userId:req.body.userId,
+        task: req.body.task,
+        status: req.body.status,
+      };
+      dbo.collection("Completed_data").insertOne(data, (err, result) => {
+        if (!err) {
+          console.log("record inserted in completed table", req.body);
+          // const resp = req.body.task
+          res.send(`record inserted successfully ${req.body.task}`);
+        }
+      });
     }
   });
 });
 
 // Get Completed data API
 
-app.get("/getCompletedTask", async (req, res) => {
+app.get("/getCompletedTask/:id", async (req, res) => {
   mongoClient.connect(connectionString, (err, db) => {
     if (!err) {
       const dbo = db.db("TodoDb");
+      const query = {userId:req.params.id.slice(1)}
       dbo
-        .collection("Completed_data")
-        .find({})
-        .toArray((err, doc) => {
-          if (!err) {
+      .collection("Completed_data")
+      .find(query)
+      .toArray((err, doc) => {
+        if (!err) {
+            console.log('completed',doc)
             res.send(doc);
           } else {
             throw err;
@@ -142,9 +150,10 @@ app.put("/updateTask/:task", async (req, res) => {
         .updateOne(
           { task: req.params.task },
           { $set: req.body },
-          (err, res) => {
+          (err, resp) => {
             if (!err) {
               console.log("1 record updated");
+              res.send("Updated successfully.");
             }
           }
         );
@@ -152,6 +161,43 @@ app.put("/updateTask/:task", async (req, res) => {
   });
 });
 
+app.post("/signup", async (req, res) => {
+  mongoClient.connect(connectionString, (err, db) => {
+    if (!err) {
+      console.log("reqbody", req);
+      const dbo = db.db("TodoDb");
+      const data = {
+        name: req.body.name,
+        email: req.body.email,
+        userName: req.body.userName,
+        password: req.body.password,
+      };
+      dbo.collection("User_Data").insertOne(data, (err, result) => {
+        if (!err) {
+          console.log("Record inserted");
+          res.send("User added successfully");
+        }
+      });
+    }
+  });
+});
+app.get("/fetchUserName/:userName", async (req, res) => {
+  mongoClient.connect(connectionString, (err, db) => {
+    if (!err) {
+      const dbo = db.db("TodoDb");
+      console.log(req.params.userName);
+      dbo
+        .collection("User_Data")
+        .find({ userName: req.params.userName })
+        .toArray((err, result) => {
+          if (!err) {
+            res.send(result);
+          }
+        });
+    }
+  });
+});
+// app.get('')
 // PORT
 const port = process.env.PORT || 8090;
 app.listen(port, () => console.log(`Listing port ${port}`));
